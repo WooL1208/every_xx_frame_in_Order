@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-center">擷取幀</h1>
+<form id="frames-form" class="row g-3">
+    <!-- 擷取幀相關設定 -->
+    <div class="col-md-6">
+        <label for="output_folder" class="form-label">輸入資料夾</label>
+        <input type="text" class="form-control" id="output_folder" name="output_folder" value="./data/input">
+    </div>
+    <div class="col-md-6">
+        <label for="frame_output_folder" class="form-label">幀輸出資料夾</label>
+        <input type="text" class="form-control" id="frame_output_folder" name="frame_output_folder" value="./data/output">
+    </div>
+    <div class="col-md-6">
+        <label for="frame_interval" class="form-label">幀間隔</label>
+        <input type="number" class="form-control" id="frame_interval" name="frame_interval" value="5">
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="use_multithreading" name="use_multithreading" checked>
+        <label class="form-check-label" for="use_multithreading">使用多執行緒</label>
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="use_gpu" name="use_gpu" checked>
+        <label class="form-check-label" for="use_gpu">使用 GPU</label>
+    </div>
+    <div class="col-12">
+        <button type="button" class="btn btn-primary w-100" onclick="runGrabFrames()">執行擷取幀</button>
+    </div>
+</form>
+<script>
+    function runGrabFrames() {
+        fetch('/run', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                burn_subtitles: false,
+                grab_frames: true,
+                video_folder: document.getElementById('output_folder').value,
+                frame_output_folder: document.getElementById('frame_output_folder').value,
+                frame_interval: parseInt(document.getElementById('frame_interval').value),
+                use_gpu: document.getElementById('use_gpu').checked,
+                use_multithreading: document.getElementById('use_multithreading').checked
+            })
+        }).then(response => response.json())
+          .then(data => alert('擷取幀完成！'))
+          .catch(error => alert('發生錯誤：' + error));
+    }
+</script>
+{% endblock %}

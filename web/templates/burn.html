@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-center">燒字幕</h1>
+<form id="burn-form" class="row g-3">
+    <!-- 燒字幕相關設定 -->
+    <div class="col-md-6">
+        <label for="video_folder" class="form-label">影片資料夾</label>
+        <input type="text" class="form-control" id="video_folder" name="video_folder" value="./data/videos">
+    </div>
+    <div class="col-md-6">
+        <label for="subtitle_folder" class="form-label">字幕資料夾</label>
+        <input type="text" class="form-control" id="subtitle_folder" name="subtitle_folder" value="./data/subtitles">
+    </div>
+    <div class="col-md-6">
+        <label for="output_folder" class="form-label">輸出資料夾</label>
+        <input type="text" class="form-control" id="output_folder" name="output_folder" value="./data/input">
+    </div>
+    <div class="col-md-6">
+        <label for="font_folder" class="form-label">字型資料夾</label>
+        <input type="text" class="form-control" id="font_folder" name="font_folder" value="./assets/fonts">
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="use_gpu" name="use_gpu" checked>
+        <label class="form-check-label" for="use_gpu">使用 GPU</label>
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="stop_on_error" name="stop_on_error">
+        <label class="form-check-label" for="stop_on_error">停止於錯誤</label>
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="check_system_fonts" name="check_system_fonts">
+        <label class="form-check-label" for="check_system_fonts">檢查系統字型</label>
+    </div>
+    <div class="col-12">
+        <button type="button" class="btn btn-primary w-100" onclick="runBurnSubtitles()">執行燒字幕</button>
+    </div>
+</form>
+
+<script>
+    function runBurnSubtitles() {
+        fetch('/run', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                burn_subtitles: true,
+                grab_frames: false,
+                video_folder: document.getElementById('video_folder').value,
+                subtitle_folder: document.getElementById('subtitle_folder').value,
+                output_folder: document.getElementById('output_folder').value,
+                font_folder: document.getElementById('font_folder').value,
+                use_gpu: document.getElementById('use_gpu').checked,
+                stop_on_error: document.getElementById('stop_on_error').checked,
+                check_system_fonts: document.getElementById('check_system_fonts').checked
+            })
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        }).then(data => {
+            alert('處理開始！');
+        }).catch(error => {
+            alert('發生錯誤：' + error);
+        });
+    }
+</script>
+{% endblock %}
