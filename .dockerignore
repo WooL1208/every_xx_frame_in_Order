@@ -1,0 +1,11 @@
+__pycache__
+*.pyc
+.git
+.gitignore
+.env
+*.mp4
+*.mkv
+*.avi
+*.srt
+*.ass
+data/*

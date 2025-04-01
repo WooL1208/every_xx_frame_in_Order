@@ -34,6 +34,28 @@
    - Linux：使用套件管理器安裝，例如：`sudo apt install ffmpeg`
    - macOS：使用 Homebrew 安裝：`brew install ffmpeg`
 
+## Docker 安裝與使用
+### 使用 Docker 執行
+1. 確保已安裝 Docker
+2. 在專案根目錄執行以下指令建立映像：
+   ```bash
+   docker build -t every-frame .
+   ```
+3. 執行容器：
+   ```bash
+   # Windows PowerShell
+   docker run -p 7777:7777 -v ${PWD}/data:/app/data every-frame
+
+   # Linux/macOS
+   docker run -p 7777:7777 -v $(pwd)/data:/app/data every-frame
+   ```
+
+### Docker 相關說明
+- 容器會在 7777 端口提供網頁服務
+- 使用 `-v` 參數將本地的 data 目錄掛載到容器中
+- 所有的影片、字幕和輸出檔案都會存放在本地的 data 目錄中
+- 容器內建已安裝 ffmpeg，無需額外設定
+
 ## 使用方式
 ### 1. 命令列介面 (CLI)
 使用命令列執行特定功能：
@@ -50,7 +72,7 @@ python main.py cli grab
    ```bash
    python main.py
    ```
-2. 開啟瀏覽器，訪問 `http://localhost:5000`
+2. 開啟瀏覽器，訪問 `http://localhost:7777`
 
 #### 主要功能頁面
 - **首頁** (`/`): 選擇要使用的功能
