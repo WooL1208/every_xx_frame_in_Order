@@ -1,6 +1,8 @@
 import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
+from tqdm import tqdm
+import sys  # 新增
 
 
 class VideoFrameExtractor:
@@ -42,11 +44,20 @@ class VideoFrameExtractor:
         if use_multithreading:
             # 使用多線程處理多個影片檔案
             with ThreadPoolExecutor() as executor:
-                executor.map(lambda video: self._process_video(
-                    video, frame_interval, use_gpu), video_files)
+                list(tqdm(
+                    executor.map(lambda video: self._process_video(
+                        video, frame_interval, use_gpu), video_files),
+                    total=len(video_files),
+                    desc="處理影片中",
+                    file=sys.stdout  # 指定輸出流
+                ))
         else:
             # 單線程逐一處理影片檔案
-            for video in video_files:
+            for video in tqdm(
+                video_files,
+                desc="處理影片中",
+                file=sys.stdout  # 指定輸出流
+            ):
                 self._process_video(video, frame_interval, use_gpu)
 
     def _is_video_file(self, filename: str) -> bool:
@@ -118,7 +129,12 @@ class VideoFrameExtractor:
             [f for f in os.listdir(output_folder) if f.startswith(
                 "temp_") and f.endswith(".jpg")]
         )
-        for idx, temp_file in enumerate(temp_files, start=1):
+        for idx, temp_file in enumerate(tqdm(
+            temp_files,
+            desc=f"處理幀檔案 ({video_name})",
+            unit="frame",
+            file=sys.stdout  # 指定輸出流
+        ), start=1):
             new_name = f"{video_name}_{idx * frame_interval}_of_{total_frames}.jpg"
             os.rename(
                 os.path.join(output_folder, temp_file),
