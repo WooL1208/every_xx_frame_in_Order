@@ -7,12 +7,15 @@ __pycache__/
 venv/
 env/
 
-# Output folders
-./output/*
-./input/*
-./font/*
-./subtitles/*
-./videos/*
+# Data folders
+data/input/
+data/output/
+data/subtitles/
+data/videos/
+
+# Assets
+assets/fonts/
+assets/examples/
 
 # System files
 .DS_Store
@@ -21,3 +24,6 @@ Thumbs.db
 # Logs and temporary files
 *.log
 *.tmp
+
+# 確保追蹤 requirements.txt
+!requirements.txt
